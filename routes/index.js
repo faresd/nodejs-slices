@@ -1,4 +1,5 @@
 var prismic = require('../prismic-helpers');
+var social = require('../includes/social');
 
 // -- Display all documents
 
@@ -26,6 +27,11 @@ function buildMixinName(sliceType, sliceLabel) {
 
 }
 
+function socialPluginEnabled(doc) {
+  var socialEnabled = doc.getText(doc.type + '.social_cards_enabled');
+  return (socialEnabled == 'Enabled');
+}
+
 function getPage(uid, ctx, res, callback) {
   ctx.api.forms('everything').ref(ctx.ref)
       .query('[[:d = at(my.page.uid,"' + uid + '")]]').submit(function(err, docs) {
@@ -48,7 +54,10 @@ exports.page = prismic.route(function(req, res, ctx) {
       doc: doc,
       slices: slices,
       helpers: {
-        buildMixinName:buildMixinName
+        buildMixinName:buildMixinName,
+        socialPluginEnabled:socialPluginEnabled(doc),
+        pageUrl: social.pageUrl(req),
+        defaultImage : social.defaultImage
       }
     });
   })

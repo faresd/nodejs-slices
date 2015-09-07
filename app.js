@@ -13,7 +13,8 @@ var express = require('express'),
     routes = require('./routes'),
     http = require('http'),
     path = require('path'),
-    prismic = require('./prismic-helpers');
+    prismic = require('./prismic-helpers'),
+    social = require('./includes/social');
 
 var app = express();
 
