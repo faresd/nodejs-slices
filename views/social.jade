@@ -9,6 +9,5 @@ div.social-share-widgets
         i.icon-linkedin
     span.social-share-button(onclick="popUp=window.open('http://pinterest.com/pin/create/link/?url=#{helpers.pageUrl(doc) + '&media=' + helpers.defaultImage(doc) + '&description=' + helpers.defaultDescription(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
         i.icon-pinterest
-    //
-    //a.social-share-button mail" href="mailto:?subject=<?= email_title() ?>&body=<?= email_description() ?>">
-    //    i.icon-email
+    a.social-share-button.mail(href="mailto:?subject=#{helpers.emailTitle(doc)}")
+        i.icon-email

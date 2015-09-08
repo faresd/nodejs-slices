@@ -34,7 +34,12 @@ exports.defaultDescription = function(doc) {
     })
 }
 
-function arrayFlatten(array) {
+exports.emailTitle = function(doc) {
+    return (email(doc) && email(doc)[0].get('card_title')) ? email(doc)[0].get('card_title').value : ''
+}
+
+
+function flattenArray(array) {
     return [].concat.apply([], array)
 }
 
@@ -51,10 +56,10 @@ function getImagesFromSliceZone(sliceZone) {
             })
             return images;
         })
-        var imagesFlattened = arrayFlatten(itemsImages)
+        var imagesFlattened = flattenArray(itemsImages)
         return imagesFlattened
     })
-    return arrayFlatten(imagesInSliceZone)
+    return flattenArray(imagesInSliceZone)
 }
 
 
@@ -83,10 +88,10 @@ function getStructuredTextsFromSliceZone(sliceZone) {
             })
             return structureTexts;
         })
-        var structureTextsFlattened = arrayFlatten(itemsStructuredText)
+        var structureTextsFlattened = flattenArray(itemsStructuredText)
         return structureTextsFlattened
     })
-    return arrayFlatten(structureTextsInSliceZone)
+    return flattenArray(structureTextsInSliceZone)
 }
 
 function getDescriptionFromStructuredText(structuredText) {
@@ -107,15 +112,14 @@ function social(doc) {
     }
 }
 
-function email() {
-    var socialSlices = social();
+function email(doc) {
+    var socialSlices = social(doc);
     if(socialSlices) {
-        socialSlices.map(function(slice) {
-            if (slice.type == 'email') {
-                return slice.value
+        var emailSlices =  socialSlices.map(function(slice) {
+            if (slice.sliceType == 'email') {
+                return slice.value.toArray()
             }
         })
+        return flattenArray(emailSlices)
     }
 }
-
-function emailTitle() { return (email() && email().toArray()[0]) ? email().toArray()[0] : '' }
