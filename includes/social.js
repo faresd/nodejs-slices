@@ -7,7 +7,7 @@ exports.pageUrl = function(req){
 }
 
 exports.defaultImage = function(doc) {
-    var image = Object.keys(doc.fragments).map(function(key) {
+    var images = Object.keys(doc.fragments).map(function(key) {
         var fragment = doc.fragments[key]
         if (fragment.type == "SliceZone") {
             var sliceZone = doc.getSliceZone(doc.type + '.body').value;
@@ -20,22 +20,41 @@ exports.defaultImage = function(doc) {
             if(structuredText.getFirstImage() && structuredText.getFirstImage().getView("main")) return structuredText.getFirstImage().getView("main").url;
         }
     })
-    return image;
+
+    return findFirstValid(images)
+
+}
+
+function findFirstValid(array) {
+    var firstValid = ""
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] != undefined){
+            firstValid = array[0]
+            break;
+        }
+    }
+
+    return firstValid;
 }
 
 exports.defaultDescription = function(doc) {
     if (!doc) {
         return;
     }
-    Object.keys(doc.fragments).map(function(key) {
+    var descriptions = Object.keys(doc.fragments).map(function(key) {
         var fragment = doc.fragments[key]
         var firstStructuredText = getStructuredTextsFromDoc(doc, fragment)[0]
         return getDescriptionFromStructuredText(firstStructuredText)
     })
+    return findFirstValid(descriptions)
 }
 
 exports.emailTitle = function(doc) {
-    return (email(doc) && email(doc)[0].get('card_title')) ? email(doc)[0].get('card_title').value : ''
+    return (email(doc) && email(doc)[0].get('card_title')) ? email(doc)[0].get('card_title').value : defaultTitle(doc)
+}
+
+exports.emailDescription = function(doc) {
+    return (email(doc) && email(doc)[0].get('card_description')) ? email(doc)[0].get('card_description').value : defaultDescription(doc)
 }
 
 
@@ -121,5 +140,24 @@ function email(doc) {
             }
         })
         return flattenArray(emailSlices)
+    }
+}
+
+function defaultTitle(doc) {
+    if (!doc) {
+        return;
+    }
+    Object.keys(doc.fragments).map(function(key) {
+        var fragment = doc.fragments[key]
+        var firstStructuredText = getStructuredTextsFromDoc(doc, fragment)[0]
+        return getTitleFromStructuredText(firstStructuredText)
+    })
+}
+
+function getTitleFromStructuredText(structuredText) {
+    if(structuredText) {
+        if (structuredText.getTitle()) {
+            return structuredText.getTitle()
+        }
     }
 }
