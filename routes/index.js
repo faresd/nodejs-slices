@@ -57,10 +57,7 @@ exports.page = prismic.route(function(req, res, ctx) {
         buildMixinName:buildMixinName,
         socialPluginEnabled:socialPluginEnabled(doc),
         pageUrl: social.pageUrl(req),
-        defaultImage : social.defaultImage,
-        defaultDescription : social.defaultDescription,
-        emailTitle: social.emailTitle,
-        emailDescription: social.emailDescription
+        social: social
       }
     });
   })

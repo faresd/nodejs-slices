@@ -14,35 +14,6 @@ exports.defaultImage = function(doc) {
     return findFirstValid(images).getView('main').url
 }
 
-
-
-function getImagesFromDoc(doc) {
-    var images = Object.keys(doc.fragments).map(function(key) {
-        if (doc.fragments[key].type == "SliceZone") {
-            var sliceZone = doc.getSliceZone(key).value
-            return getImagesFromSliceZone(sliceZone);
-        } else if (doc.fragments[key].type == "StructuredText") {
-            var structuredText = doc.getStructuredText(key)
-            if(structuredText.getFirstImage() && structuredText.getFirstImage()) {
-                return [structuredText.getFirstImage()];
-            } else return []
-        } else return []
-    })
-    return flattenArray(images)
-}
-
-function findFirstValid(array) {
-    var firstValid = null;
-    for (var i = 0; i < array.length; i++) {
-        if (array[i] != undefined){
-            firstValid = array[0]
-            break;
-        }
-    }
-
-    return firstValid;
-}
-
 exports.defaultDescription = function(doc) {
     if (!doc) {
         return;
@@ -59,11 +30,20 @@ exports.emailDescription = function(doc) {
     return (email(doc) && email(doc)[0].get('card_description')) ? email(doc)[0].get('card_description').value : defaultDescription(doc)
 }
 
-
-function flattenArray(array) {
-    return [].concat.apply([], array)
+function getImagesFromDoc(doc) {
+    var images = Object.keys(doc.fragments).map(function(key) {
+        if (doc.fragments[key].type == "SliceZone") {
+            var sliceZone = doc.getSliceZone(key).value
+            return getImagesFromSliceZone(sliceZone);
+        } else if (doc.fragments[key].type == "StructuredText") {
+            var structuredText = doc.getStructuredText(key)
+            if(structuredText.getFirstImage() && structuredText.getFirstImage()) {
+                return [structuredText.getFirstImage()];
+            } else return []
+        } else return []
+    })
+    return flattenArray(images)
 }
-
 
 function getImagesFromSliceZone(sliceZone) {
     var imagesInSliceZone =  sliceZone.map(function(slice) {
@@ -83,6 +63,23 @@ function getImagesFromSliceZone(sliceZone) {
     })
     return flattenArray(imagesInSliceZone)
 }
+
+function findFirstValid(array) {
+    var firstValid = null;
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] != undefined){
+            firstValid = array[0]
+            break;
+        }
+    }
+
+    return firstValid;
+}
+
+function flattenArray(array) {
+    return [].concat.apply([], array)
+}
+
 
 function getStructuredTextsFromDoc(doc) {
     var structuredTexts = Object.keys(doc.fragments).map(function(key) {

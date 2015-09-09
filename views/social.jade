@@ -7,7 +7,7 @@ div.social-share-widgets
         i.icon-twitter
     span.social-share-button(onclick="popUp=window.open('https://www.linkedin.com/shareArticle?mini=true&url=#{helpers.pageUrl(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
         i.icon-linkedin
-    span.social-share-button(onclick="popUp=window.open('http://pinterest.com/pin/create/link/?url=#{helpers.pageUrl(doc) + '&media=' + helpers.defaultImage(doc) + '&description=' + helpers.defaultDescription(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
+    span.social-share-button(onclick="popUp=window.open('http://pinterest.com/pin/create/link/?url=#{helpers.pageUrl(doc) + '&media=' + helpers.social.defaultImage(doc) + '&description=' + helpers.social.defaultDescription(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
         i.icon-pinterest
-    a.social-share-button.mail(href="mailto:?subject=#{helpers.emailTitle(doc) + '&body=' + helpers.emailDescription(doc)}")
+    a.social-share-button.mail(href="mailto:?subject=#{helpers.social.emailTitle(doc) + '&body=' + helpers.social.emailDescription(doc)}")
         i.icon-email
