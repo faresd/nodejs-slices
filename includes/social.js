@@ -7,26 +7,32 @@ exports.pageUrl = function(req){
 }
 
 exports.defaultImage = function(doc) {
+    if (!doc) {
+        return;
+    }
+    var images = getImagesFromDoc(doc)
+    return findFirstValid(images).getView('main').url
+}
+
+
+
+function getImagesFromDoc(doc) {
     var images = Object.keys(doc.fragments).map(function(key) {
-        var fragment = doc.fragments[key]
-        if (fragment.type == "SliceZone") {
-            var sliceZone = doc.getSliceZone(doc.type + '.body').value;
-            var firstImage =  getImagesFromSliceZone(sliceZone)[0]
-            return firstImage.getView("main").url
-        } else if (fragment.type == "Image") {
-            getImageFromFragmentImage(fragment)
-        } else if (fragment.type == "StructuredText") {
-            var structuredText = doc.getStructuredText(doc.type + '.title')
-            if(structuredText.getFirstImage() && structuredText.getFirstImage().getView("main")) return structuredText.getFirstImage().getView("main").url;
-        }
+        if (doc.fragments[key].type == "SliceZone") {
+            var sliceZone = doc.getSliceZone(key).value
+            return getImagesFromSliceZone(sliceZone);
+        } else if (doc.fragments[key].type == "StructuredText") {
+            var structuredText = doc.getStructuredText(key)
+            if(structuredText.getFirstImage() && structuredText.getFirstImage()) {
+                return [structuredText.getFirstImage()];
+            } else return []
+        } else return []
     })
-
-    return findFirstValid(images)
-
+    return flattenArray(images)
 }
 
 function findFirstValid(array) {
-    var firstValid = ""
+    var firstValid = null;
     for (var i = 0; i < array.length; i++) {
         if (array[i] != undefined){
             firstValid = array[0]
@@ -41,12 +47,8 @@ exports.defaultDescription = function(doc) {
     if (!doc) {
         return;
     }
-    var descriptions = Object.keys(doc.fragments).map(function(key) {
-        var fragment = doc.fragments[key]
-        var firstStructuredText = getStructuredTextsFromDoc(doc, fragment)[0]
-        return getDescriptionFromStructuredText(firstStructuredText)
-    })
-    return findFirstValid(descriptions)
+    var firstStructuredText = findFirstValid(getStructuredTextsFromDoc(doc))
+    return getDescriptionFromStructuredText(firstStructuredText)
 }
 
 exports.emailTitle = function(doc) {
@@ -73,6 +75,7 @@ function getImagesFromSliceZone(sliceZone) {
             var images = imageKeys.map(function(key) {
                 return item.get(key)
             })
+
             return images;
         })
         var imagesFlattened = flattenArray(itemsImages)
@@ -81,18 +84,18 @@ function getImagesFromSliceZone(sliceZone) {
     return flattenArray(imagesInSliceZone)
 }
 
+function getStructuredTextsFromDoc(doc) {
+    var structuredTexts = Object.keys(doc.fragments).map(function(key) {
+        if (doc.fragments[key].type == "SliceZone") {
+            var sliceZone = doc.getSliceZone(key).value
+            return getStructuredTextsFromSliceZone(sliceZone);
+        } else if (doc.fragments[key].type == "StructuredText") {
+            return [doc.getStructuredText(key)]
+        } else return []
+    })
+    return flattenArray(structuredTexts)
 
-function getImageFromFragmentImage(fragment) {
-    if(fragment) return fragment.getView("main").url
-}
 
-function getStructuredTextsFromDoc(doc, fragment) {
-    if (fragment.type == "SliceZone") {
-        var sliceZone = doc.getSliceZone(doc.type + '.body').value
-        return getStructuredTextsFromSliceZone(sliceZone);
-    } else if (fragment.type == "StructuredText") {
-        return [doc.getStructuredText(doc.type + '.title')]
-    } else return []
 }
 
 function getStructuredTextsFromSliceZone(sliceZone) {
@@ -147,11 +150,8 @@ function defaultTitle(doc) {
     if (!doc) {
         return;
     }
-    Object.keys(doc.fragments).map(function(key) {
-        var fragment = doc.fragments[key]
-        var firstStructuredText = getStructuredTextsFromDoc(doc, fragment)[0]
-        return getTitleFromStructuredText(firstStructuredText)
-    })
+    var firstStructuredText = findFirstValid(getStructuredTextsFromDoc(doc))
+    return getTitleFromStructuredText(firstStructuredText)
 }
 
 function getTitleFromStructuredText(structuredText) {
