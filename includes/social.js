@@ -37,9 +37,10 @@ function getImagesFromDoc(doc) {
             return getImagesFromSliceZone(sliceZone);
         } else if (doc.fragments[key].type == "StructuredText") {
             var structuredText = doc.getStructuredText(key)
-            if(structuredText.getFirstImage() && structuredText.getFirstImage()) {
-                return [structuredText.getFirstImage()];
-            } else return []
+            return [getFirstImageFromStructuredText(structuredText)]
+        } else if (doc.fragments[key].type == "Image") {
+            return [item.get(key)]
+
         } else return []
     })
     return flattenArray(images)
@@ -49,19 +50,28 @@ function getImagesFromSliceZone(sliceZone) {
     var imagesInSliceZone =  sliceZone.map(function(slice) {
         var items = slice.value.toArray()
         var itemsImages = items.map(function (item) {
-            var imageKeys = Object.keys(item.fragments).filter(function(key){
-                return (item.fragments[key].type == "Image")
-            })
-            var images = imageKeys.map(function(key) {
-                return item.get(key)
-            })
+            var images = Object.keys(item.fragments).map(function(key) {
+                if (item.fragments[key].type == "StructuredText") {
+                    var structuredText = item.getStructuredText(key)
+                    return getFirstImageFromStructuredText(structuredText)
+                } else if (item.fragments[key].type == "Image") {
+                    return item.get(key)
 
-            return images;
+                } else return;
+            })
+            return images
         })
         var imagesFlattened = flattenArray(itemsImages)
         return imagesFlattened
     })
+
     return flattenArray(imagesInSliceZone)
+}
+
+function getFirstImageFromStructuredText(structuredText) {
+    if(structuredText.getFirstImage && structuredText.getFirstImage()) {
+        return structuredText.getFirstImage();
+    } else return;
 }
 
 function findFirstValid(array) {
