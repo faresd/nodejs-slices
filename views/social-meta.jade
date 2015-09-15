@@ -1,5 +1,5 @@
+//- Open Graph data (facebook & linkedin)
 mixin generalCard
-    //- Open Graph data (facebook & linkedin)
     meta(property="og:title" content=helpers.social.generalCardTitle(doc))
     meta(property="og:type", content="article")
     meta(property="og:url", content=helpers.pageUrl(doc))
@@ -22,6 +22,25 @@ mixin placeCard
     meta(property="og:image", content=helpers.social.placeCardLatitude(doc))
     meta(property="og:image", content=helpers.social.placeCardLongitude(doc))
 
+//- Twitter Card data
+mixin twitterSummary
+    meta(name="twitter:card", content="summary")
+    meta(name="twitter:site", content=helpers.social.twitterSummarySite(doc))
+    meta(name="twitter:site", content=helpers.social.twitterSummaryTitle(doc))
+    meta(name="twitter:site", content=helpers.social.twitterSummaryDescription(doc))
+    meta(name="twitter:site", content=helpers.social.twitterSummaryImage(doc))
+    //meta(property="og:description", content=helpers.social.placeCardDescription(doc))
+    //meta(property="og:image", content=helpers.social.placeCardLatitude(doc))
+    //meta(property="og:image", content=helpers.social.placeCardLongitude(doc))
+
+
+
+    //<meta name="twitter:card" content="summary" />
+    //<meta name="twitter:site" content="<?= twitter_summary_site() ?>" />
+    //<meta name="twitter:title" content="<?= twitter_summary_title() ?>">
+    //<meta name="twitter:description" content="<?= twitter_summary_description() ?>">
+    //<meta name="twitter:image:src" content="<?= twitter_summary_image() ?>">
+    //
 
 meta(name="p:domain_verify", content="48ae95a94ba8fd30f31a003069eeff53")
 if helpers.social.isShareReady(doc)
@@ -34,3 +53,10 @@ if helpers.social.isShareReady(doc)
             when 'place_card'
                 +placeCard
             default
+                div
+    if helpers.social.twitterCardExists(doc)
+        case helpers.social.twitterCardType(doc)
+            when 'twitter_summary'
+                +twitterSummary
+            default
+                div

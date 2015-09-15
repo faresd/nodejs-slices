@@ -6,15 +6,18 @@ exports.pageUrl = function(req){
     }
 }
 
-exports.defaultImage = function(doc) {
+exports.defaultImage = defaultImage
+
+function defaultImage (doc) {
     if (!doc) {
         return;
     }
     var images = getImagesFromDoc(doc)
     return findFirstValid(images).getView('main').url
 }
+exports.defaultDescription = defaultDescription
 
-exports.defaultDescription = function(doc) {
+function defaultDescription (doc) {
     if (!doc) {
         return;
     }
@@ -40,13 +43,66 @@ exports.isShareReady = function(doc) {
 exports.openGraphCardExists = function(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
-        var slice = exists(socialSlices, function(slice) {
+        return exists(socialSlices, function(slice) {
             return isOpenGraphCard(slice.sliceType)
         })
-        return slice
     }
     return false;
 }
+
+
+exports.twitterCardExists = function(doc) {
+    var socialSlices = social(doc);
+
+    if(socialSlices) {
+        return exists(socialSlices, function(slice) {
+            return isTwitterCard(slice.sliceType)
+        })
+    }
+    return false;
+}
+
+
+function isTwitterCard(sliceType) {
+    return (sliceType == 'twitter_app' || sliceType == 'twitter_summary' || sliceType == 'twitter_summary_large');
+}
+
+exports.twitterCardType = function(doc) {
+    var socialSlices = social(doc);
+    if(socialSlices) {
+        var foundSlice = findFirst(socialSlices, function(slice) {
+            return isTwitterCard(slice.sliceType)
+        })
+        return foundSlice.sliceType
+    }
+}
+function twitterSummary(doc) {
+    var socialSlices = social(doc);
+    if(socialSlices) {
+        var foundSlice = findFirst(socialSlices, function(slice) {
+            return slice.sliceType == 'twitter_summary'
+        })
+        return foundSlice.sliceType
+    }
+}
+
+exports.twitterSummarySite = function(doc) {
+    return twitterSummary(doc).value.toArray()[0].get('twitter_site') ? twitterSummary(doc).value.toArray()[0].get('twitter_site').value : '';
+}
+
+exports.twitterSummaryTitle = function(doc) {
+    return twitterSummary(doc).value.toArray()[0].get('card_title') ? twitterSummary(doc).value.toArray()[0].get('card_title').value : defaultTitle();
+}
+
+exports.twitterSummaryDescription = function(doc) {
+    return twitterSummary(doc).value.toArray()[0].get('card_description') ? twitterSummary(doc).value.toArray()[0].get('card_description').value : defaultDescription();
+}
+
+
+exports.twitterSummaryImage = function(doc) {
+    return twitterSummary(doc).value.toArray()[0].get('card_image') && twitterSummary(doc).value.toArray()[0].get('card_image').getView("main") ? twitterSummary(doc).value.toArray()[0].get('card_image').getView("main").url : defaultImage(doc);
+}
+
 
 function exists(array, funktion) {
     var i = array.length;
