@@ -1,4 +1,4 @@
-// To add a new slice type template should include the .jade template that has a Mixin that has same camelcased name.
+//- To add a new slice type template should include the .jade template that has a Mixin that has same camelcased name.
 
 include ./prismic.jade
 include ./slices/slides.jade
@@ -23,6 +23,7 @@ head
     link(rel="stylesheet", href="/stylesheets/common.css")
     link(rel="stylesheet", href="/stylesheets/social.css")
     meta(name="viewport", content="width=device-width, initial-scale=1")
+    include ./social-meta.jade
 
     script(src="/javascripts/vendor/jquery-1.11.2.min.js")
     script(src="/javascripts/slices.js")
@@ -32,7 +33,7 @@ body.page
         div#page-content
             for slice in slices
                 if slice.sliceType != undefined
-                    // Find the right mixin for a slice type and label.
+                    //- Find the right mixin for a slice type and label.
                     +#{helpers.buildMixinName(slice.sliceType, slice.label)}(slice)
     if (helpers.socialPluginEnabled)
         include ./social.jade

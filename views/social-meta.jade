@@ -1,0 +1,36 @@
+mixin generalCard
+    //- Open Graph data (facebook & linkedin)
+    meta(property="og:title" content=helpers.social.generalCardTitle(doc))
+    meta(property="og:type", content="article")
+    meta(property="og:url", content=helpers.pageUrl(doc))
+    meta(property="og:image", content=helpers.social.generalCardImage(doc))
+    meta(property="og:description", content=helpers.social.generalCardDescription(doc))
+    meta(property="article:section", content="Article Section")
+
+mixin productCard
+    meta(property="og:title" content=helpers.social.productCardTitle(doc))
+    meta(property="og:type", content="article")
+    meta(property="og:url", content=helpers.pageUrl(doc))
+    meta(property="og:image", content=helpers.social.productCardImage(doc))
+    meta(property="og:description", content=helpers.social.productCardDescription(doc))
+    meta(property="article:section", content="Article Section")
+
+mixin placeCard
+    meta(property="og:title" content=helpers.social.placeCardTitle(doc))
+    meta(property="og:type", content="place")
+    meta(property="og:description", content=helpers.social.placeCardDescription(doc))
+    meta(property="og:image", content=helpers.social.placeCardLatitude(doc))
+    meta(property="og:image", content=helpers.social.placeCardLongitude(doc))
+
+
+meta(name="p:domain_verify", content="48ae95a94ba8fd30f31a003069eeff53")
+if helpers.social.isShareReady(doc)
+    if helpers.social.openGraphCardExists(doc)
+        case helpers.social.openGraphCardType(doc)
+            when 'general_card'
+                +generalCard
+            when 'product-card'
+                +productCard
+            when 'place_card'
+                +placeCard
+            default
