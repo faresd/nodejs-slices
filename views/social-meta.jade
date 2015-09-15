@@ -9,26 +9,26 @@ mixin generalCard
 
 mixin productCard
     meta(property="og:title" content=helpers.social.productCardTitle(doc))
-    meta(property="og:type", content="article")
-    meta(property="og:url", content=helpers.pageUrl(doc))
-    meta(property="og:image", content=helpers.social.productCardImage(doc))
     meta(property="og:description", content=helpers.social.productCardDescription(doc))
-    meta(property="article:section", content="Article Section")
+    meta(property="og:image", content=helpers.social.productCardSingleImage(doc))
+    meta(property="og:type", content="product")
+    meta(property="og:price:amount", content=helpers.social.productCardAmount(doc))
+    meta(property="og:price:currency", content=helpers.social.productCardCurrency(doc))
 
 mixin placeCard
     meta(property="og:title" content=helpers.social.placeCardTitle(doc))
     meta(property="og:type", content="place")
     meta(property="og:description", content=helpers.social.placeCardDescription(doc))
-    meta(property="og:image", content=helpers.social.placeCardLatitude(doc))
-    meta(property="og:image", content=helpers.social.placeCardLongitude(doc))
+    meta(property="place:location:latitude", content=helpers.social.placeCardLatitude(doc))
+    meta(property="place:location:longitude", content=helpers.social.placeCardLongitude(doc))
 
 //- Twitter Card data
 mixin twitterSummary
     meta(name="twitter:card", content="summary")
     meta(name="twitter:site", content=helpers.social.twitterSummarySite(doc))
-    meta(name="twitter:site", content=helpers.social.twitterSummaryTitle(doc))
-    meta(name="twitter:site", content=helpers.social.twitterSummaryDescription(doc))
-    meta(name="twitter:site", content=helpers.social.twitterSummaryImage(doc))
+    meta(name="twitter:title", content=helpers.social.twitterSummaryTitle(doc))
+    meta(name="twitter:description", content=helpers.social.twitterSummaryDescription(doc))
+    meta(name="twitter:image:src", content=helpers.social.twitterSummaryImage(doc))
     //meta(property="og:description", content=helpers.social.placeCardDescription(doc))
     //meta(property="og:image", content=helpers.social.placeCardLatitude(doc))
     //meta(property="og:image", content=helpers.social.placeCardLongitude(doc))
