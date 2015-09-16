@@ -104,6 +104,100 @@ exports.twitterSummaryImage = function(doc) {
 }
 
 
+
+function twitterSummaryLarge() {
+    var socialSlices = social(doc);
+    if(socialSlices) {
+        var foundSlice = findFirst(socialSlices, function(slice) {
+            return slice.sliceType == 'twitter_summary_large'
+        })
+        return foundSlice.sliceType
+    }
+}
+
+exports.twittersummaryLargeTitle = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('card_title') ? twitterSummaryLarge(doc).value.toArray()[0].get('card_title').value : defaultTitle();
+}
+
+exports.twitterSummaryLargeDescription = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('card_description') ? twitterSummaryLarge(doc).value.toArray()[0].get('card_description').value : defaultDescription();
+}
+
+exports.twitterSummaryLargeImage = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('card_image') && twitterSummaryLarge(doc).value.toArray()[0].get('card_image').getView("main") ? twitterSummaryLarge(doc).value.toArray()[0].get('card_image').getView("main").url : defaultImage(doc);
+}
+
+exports.twitterSummaryLargeSite = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('twitter_site') ? twitterSummaryLarge(doc).value.toArray()[0].get('twitter_site').value : '';
+}
+
+exports.twitterSummaryLargeCreator = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('twitter_creator') ? twitterSummaryLarge(doc).value.toArray()[0].get('twitter_creator').value : '';
+}
+
+function twitterApp() {
+    var socialSlices = social(doc);
+    if(socialSlices) {
+        var foundSlice = findFirst(socialSlices, function(slice) {
+            return slice.sliceType == 'twitter_app'
+        })
+        return foundSlice.sliceType
+    }
+}
+
+exports.twitterAppSite = function(doc) {
+    return twitterApp(doc).value.toArray()[0].get('twitter_site') ? twitterApp(doc).value.toArray()[0].get('twitter_site').value : '';
+}
+
+exports.twitterAppCreator = function(doc) {
+    return twitterApp(doc).value.toArray()[0].get('twitter_creator') ? twitterApp(doc).value.toArray()[0].get('twitter_creator').value : '';
+}
+
+exports.twitterAppCountry = function(doc) {
+    return twitterApp(doc).value.toArray()[0].get('app_country') ? twitterApp(doc).value.toArray()[0].get('app_country').value : '';
+}
+
+exports.twitterAppIphoneName = function(doc) {
+    return twitterApp(doc).value.toArray()[0].get('iphone_name') ? twitterApp(doc).value.toArray()[0].get('iphone_name').value : '';
+}
+
+exports.twitterAppIphoneId = function(doc) {
+    return twitterApp(doc).value.toArray()[0].get('iphone_id') ? twitterApp(doc).value.toArray()[0].get('iphone_id').value : '';
+}
+
+exports.twitterAppIphoneUrl = function(doc) {
+    return twitterApp(doc).value.toArray()[0].get('iphone_url') ? twitterApp(doc).value.toArray()[0].get('iphone_url').value : '';
+}
+
+exports.twitterAppIpadName = function(doc) {
+    return twitterApp(doc).value.toArray()[0].get('iphone_url') ? twitterApp(doc).value.toArray()[0].get('iphone_url').value : '';
+}
+
+exports.twitterAppIpadId = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('ipad_id') ? twitterSummaryLarge(doc).value.toArray()[0].get('ipad_id').value : '';
+}
+
+exports.twitterAppIpadUrl = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('ipad_url') ? twitterSummaryLarge(doc).value.toArray()[0].get('ipad_url').value : '';
+}
+
+exports.twitterAppIpadUrl = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('ipad_url') ? twitterSummaryLarge(doc).value.toArray()[0].get('ipad_url').value : '';
+}
+
+exports.twitterAppAndroidName = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('android_name') ? twitterSummaryLarge(doc).value.toArray()[0].get('android_name').value : '';
+}
+
+exports.twitterAppAndroidId = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('android_id') ? twitterSummaryLarge(doc).value.toArray()[0].get('android_id').value : '';
+}
+
+exports.twitterAppAndroidUrl = function(doc) {
+    return twitterSummaryLarge(doc).value.toArray()[0].get('android_url') ? twitterSummaryLarge(doc).value.toArray()[0].get('android_url').value : '';
+}
+
+
 function exists(array, funktion) {
     var i = array.length;
     while (i--) {
@@ -311,7 +405,6 @@ function getStructuredTextsFromDoc(doc) {
         } else return []
     })
     return flattenArray(structuredTexts.filter(function(st) {return !!st}))
-
 
 }
 

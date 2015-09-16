@@ -29,18 +29,36 @@ mixin twitterSummary
     meta(name="twitter:title", content=helpers.social.twitterSummaryTitle(doc))
     meta(name="twitter:description", content=helpers.social.twitterSummaryDescription(doc))
     meta(name="twitter:image:src", content=helpers.social.twitterSummaryImage(doc))
-    //meta(property="og:description", content=helpers.social.placeCardDescription(doc))
-    //meta(property="og:image", content=helpers.social.placeCardLatitude(doc))
-    //meta(property="og:image", content=helpers.social.placeCardLongitude(doc))
 
+mixin twitterSummaryLarge
+    meta(name="twitter:card", content="summary_large_image")
+    meta(name="twitter:site", content=helpers.social.twitterSummaryLargeSite(doc))
+    meta(name="twitter:creator", content=helpers.social.twitterSummaryLargeCreator(doc))
+    meta(name="twitter:title", content=helpers.social.twittersummaryLargeTitle(doc))
+    meta(name="twitter:description", content=helpers.social.twitterSummaryLargeDescription(doc))
+    meta(name="twitter:image:src", content=helpers.social.twitterSummaryLargeImage(doc))
 
-
-    //<meta name="twitter:card" content="summary" />
-    //<meta name="twitter:site" content="<?= twitter_summary_site() ?>" />
-    //<meta name="twitter:title" content="<?= twitter_summary_title() ?>">
-    //<meta name="twitter:description" content="<?= twitter_summary_description() ?>">
-    //<meta name="twitter:image:src" content="<?= twitter_summary_image() ?>">
-    //
+mixin twitterApp
+    meta(name="twitter:card", content="app")
+    meta(name="twitter:site", content=helpers.social.twitterAppSite(doc))
+    meta(name="twitter:creator", content=helpers.social.twitterAppCreator(doc))
+    meta(name="twitter:app:country", content=helpers.social.twitterAppCountry(doc))
+    meta(name="twitter:app:name:iphone", content=helpers.social.twitterAppIphoneName(doc))
+    meta(name="twitter:app:id:iphone", content=helpers.social.twitterAppIphoneId(doc))
+    meta(name="twitter:app:url:iphone", content=helpers.social.twitterAppIphoneUrl(doc))
+    meta(name="twitter:app:name:ipad", content=helpers.social.twitterAppIpadName(doc))
+    meta(name="twitter:app:id:ipad", content=helpers.social.twitterAppIpadId(doc))
+    meta(name="twitter:app:url:ipad", content=helpers.social.twitterAppIpadUrl(doc))
+    meta(name="twitter:app:name:googleplay", content=helpers.social.twitterAppAndroidName(doc))
+    meta(name="twitter:app:id:googleplay", content=helpers.social.twitterAppAndroidId(doc))
+    meta(name="twitter:app:url:googleplay", content=helpers.social.twitterAppAndroidUrl(doc))
+//- Fallback
+mixin fallback
+    meta(property="og:title" content=helpers.social.defaultTitle(doc))
+    meta(property="og:type", content="article")
+    meta(property="og:url", content=helpers.pageUrl(doc))
+    meta(property="og:image", content=helpers.social.defaultImage(doc))
+    meta(property="og:description", content=helpers.social.defaultDescription(doc))
 
 meta(name="p:domain_verify", content="48ae95a94ba8fd30f31a003069eeff53")
 if helpers.social.isShareReady(doc)
@@ -58,5 +76,12 @@ if helpers.social.isShareReady(doc)
         case helpers.social.twitterCardType(doc)
             when 'twitter_summary'
                 +twitterSummary
+            when 'twitter_summary_large'
+                +twitterSummaryLarge
+            when 'twitter_app'
+                +twitterApp
             default
                 div
+else
+    +fallback
+
