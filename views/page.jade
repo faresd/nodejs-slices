@@ -14,6 +14,7 @@ include ./slices/alternated-highlights-full.jade
 include ./slices/faq.jade
 include ./slices/contact-us.jade
 include ./social-meta.jade
+include ./social.jade
 
 
 head
@@ -37,5 +38,5 @@ body.page
                     //- Find the right mixin for a slice type and label.
                     +#{helpers.buildMixinName(slice.sliceType, slice.label)}(slice)
     if (helpers.socialPluginEnabled)
-        include ./social.jade
+        +social(doc)
     include ./footer.jade

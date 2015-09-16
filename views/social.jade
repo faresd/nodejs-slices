@@ -1,13 +1,14 @@
-div.social-share-widgets
-    span.social-share-button(onclick="popUp=window.open('https://www.facebook.com/sharer/sharer.php?u=#{helpers.pageUrl(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
-        i.icon-facebook
-    span.social-share-button(onclick="popUp=window.open('https://plus.google.com/share?url=#{helpers.pageUrl(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
-        i.icon-google-plus
-    span.social-share-button(onclick="popUp=window.open('https://twitter.com/intent/tweet?url=#{helpers.pageUrl(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
-        i.icon-twitter
-    span.social-share-button(onclick="popUp=window.open('https://www.linkedin.com/shareArticle?mini=true&url=#{helpers.pageUrl(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
-        i.icon-linkedin
-    span.social-share-button(onclick="popUp=window.open('http://pinterest.com/pin/create/link/?url=#{helpers.pageUrl(doc) + '&media=' + helpers.social.defaultImage(doc) + '&description=' + helpers.social.defaultDescription(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
-        i.icon-pinterest
-    a.social-share-button.mail(href="mailto:?subject=#{helpers.social.emailTitle(doc) + '&body=' + helpers.social.emailDescription(doc)}")
-        i.icon-email
+social(doc)
+    div.social-share-widgets
+        span.social-share-button(onclick="popUp=window.open('https://www.facebook.com/sharer/sharer.php?u=#{helpers.pageUrl(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
+            i.icon-facebook
+        span.social-share-button(onclick="popUp=window.open('https://plus.google.com/share?url=#{helpers.pageUrl(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
+            i.icon-google-plus
+        span.social-share-button(onclick="popUp=window.open('https://twitter.com/intent/tweet?url=#{helpers.pageUrl(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
+            i.icon-twitter
+        span.social-share-button(onclick="popUp=window.open('https://www.linkedin.com/shareArticle?mini=true&url=#{helpers.pageUrl(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
+            i.icon-linkedin
+        span.social-share-button(onclick="popUp=window.open('http://pinterest.com/pin/create/link/?url=#{helpers.pageUrl(doc) + '&media=' + helpers.social.defaultImage(doc) + '&description=' + helpers.social.defaultDescription(doc)}', 'popupwindow', 'scrollbars=yes,width=800,height=400');popUp.focus();return false")
+            i.icon-pinterest
+        a.social-share-button.mail(href="mailto:?subject=#{helpers.social.emailTitle(doc) + '&body=' + helpers.social.emailDescription(doc)}")
+            i.icon-email
