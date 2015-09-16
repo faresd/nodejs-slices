@@ -70,8 +70,7 @@ if helpers.social.isShareReady(doc)
                 +productCard
             when 'place_card'
                 +placeCard
-            default
-                div
+
     if helpers.social.twitterCardExists(doc)
         case helpers.social.twitterCardType(doc)
             when 'twitter_summary'
@@ -80,8 +79,6 @@ if helpers.social.isShareReady(doc)
                 +twitterSummaryLarge
             when 'twitter_app'
                 +twitterApp
-            default
-                div
 else
     +fallback
 
