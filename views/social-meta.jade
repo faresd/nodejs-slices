@@ -1,84 +1,85 @@
-//- Open Graph data (facebook & linkedin)
-mixin generalCard
-    meta(property="og:title" content=helpers.social.generalCardTitle(doc))
-    meta(property="og:type", content="article")
-    meta(property="og:url", content=helpers.pageUrl(doc))
-    meta(property="og:image", content=helpers.social.generalCardImage(doc))
-    meta(property="og:description", content=helpers.social.generalCardDescription(doc))
-    meta(property="article:section", content="Article Section")
+mixin socialMeta(doc)
+    //- Open Graph data (facebook & linkedin)
+    mixin generalCard
+        meta(property="og:title" content=helpers.social.generalCardTitle(doc))
+        meta(property="og:type", content="article")
+        meta(property="og:url", content=helpers.pageUrl(doc))
+        meta(property="og:image", content=helpers.social.generalCardImage(doc))
+        meta(property="og:description", content=helpers.social.generalCardDescription(doc))
+        meta(property="article:section", content="Article Section")
 
-mixin productCard
-    meta(property="og:title" content=helpers.social.productCardTitle(doc))
-    meta(property="og:description", content=helpers.social.productCardDescription(doc))
-    meta(property="og:image", content=helpers.social.productCardSingleImage(doc))
-    meta(property="og:type", content="product")
-    meta(property="og:price:amount", content=helpers.social.productCardAmount(doc))
-    meta(property="og:price:currency", content=helpers.social.productCardCurrency(doc))
+    mixin productCard
+        meta(property="og:title" content=helpers.social.productCardTitle(doc))
+        meta(property="og:description", content=helpers.social.productCardDescription(doc))
+        meta(property="og:image", content=helpers.social.productCardSingleImage(doc))
+        meta(property="og:type", content="product")
+        meta(property="og:price:amount", content=helpers.social.productCardAmount(doc))
+        meta(property="og:price:currency", content=helpers.social.productCardCurrency(doc))
 
-mixin placeCard
-    meta(property="og:title" content=helpers.social.placeCardTitle(doc))
-    meta(property="og:type", content="place")
-    meta(property="og:description", content=helpers.social.placeCardDescription(doc))
-    meta(property="place:location:latitude", content=helpers.social.placeCardLatitude(doc))
-    meta(property="place:location:longitude", content=helpers.social.placeCardLongitude(doc))
+    mixin placeCard
+        meta(property="og:title" content=helpers.social.placeCardTitle(doc))
+        meta(property="og:type", content="place")
+        meta(property="og:description", content=helpers.social.placeCardDescription(doc))
+        meta(property="place:location:latitude", content=helpers.social.placeCardLatitude(doc))
+        meta(property="place:location:longitude", content=helpers.social.placeCardLongitude(doc))
 
-//- Twitter Card data
-mixin twitterSummary
-    meta(name="twitter:card", content="summary")
-    meta(name="twitter:site", content=helpers.social.twitterSummarySite(doc))
-    meta(name="twitter:title", content=helpers.social.twitterSummaryTitle(doc))
-    meta(name="twitter:description", content=helpers.social.twitterSummaryDescription(doc))
-    meta(name="twitter:image:src", content=helpers.social.twitterSummaryImage(doc))
+    //- Twitter Card data
+    mixin twitterSummary
+        meta(name="twitter:card", content="summary")
+        meta(name="twitter:site", content=helpers.social.twitterSummarySite(doc))
+        meta(name="twitter:title", content=helpers.social.twitterSummaryTitle(doc))
+        meta(name="twitter:description", content=helpers.social.twitterSummaryDescription(doc))
+        meta(name="twitter:image:src", content=helpers.social.twitterSummaryImage(doc))
 
-mixin twitterSummaryLarge
-    meta(name="twitter:card", content="summary_large_image")
-    meta(name="twitter:site", content=helpers.social.twitterSummaryLargeSite(doc))
-    meta(name="twitter:creator", content=helpers.social.twitterSummaryLargeCreator(doc))
-    meta(name="twitter:title", content=helpers.social.twittersummaryLargeTitle(doc))
-    meta(name="twitter:description", content=helpers.social.twitterSummaryLargeDescription(doc))
-    meta(name="twitter:image:src", content=helpers.social.twitterSummaryLargeImage(doc))
+    mixin twitterSummaryLarge
+        meta(name="twitter:card", content="summary_large_image")
+        meta(name="twitter:site", content=helpers.social.twitterSummaryLargeSite(doc))
+        meta(name="twitter:creator", content=helpers.social.twitterSummaryLargeCreator(doc))
+        meta(name="twitter:title", content=helpers.social.twittersummaryLargeTitle(doc))
+        meta(name="twitter:description", content=helpers.social.twitterSummaryLargeDescription(doc))
+        meta(name="twitter:image:src", content=helpers.social.twitterSummaryLargeImage(doc))
 
-mixin twitterApp
-    meta(name="twitter:card", content="app")
-    meta(name="twitter:site", content=helpers.social.twitterAppSite(doc))
-    meta(name="twitter:creator", content=helpers.social.twitterAppCreator(doc))
-    meta(name="twitter:app:country", content=helpers.social.twitterAppCountry(doc))
-    meta(name="twitter:app:name:iphone", content=helpers.social.twitterAppIphoneName(doc))
-    meta(name="twitter:app:id:iphone", content=helpers.social.twitterAppIphoneId(doc))
-    meta(name="twitter:app:url:iphone", content=helpers.social.twitterAppIphoneUrl(doc))
-    meta(name="twitter:app:name:ipad", content=helpers.social.twitterAppIpadName(doc))
-    meta(name="twitter:app:id:ipad", content=helpers.social.twitterAppIpadId(doc))
-    meta(name="twitter:app:url:ipad", content=helpers.social.twitterAppIpadUrl(doc))
-    meta(name="twitter:app:name:googleplay", content=helpers.social.twitterAppAndroidName(doc))
-    meta(name="twitter:app:id:googleplay", content=helpers.social.twitterAppAndroidId(doc))
-    meta(name="twitter:app:url:googleplay", content=helpers.social.twitterAppAndroidUrl(doc))
-//- Fallback
-mixin fallback
-    meta(property="og:title" content=helpers.social.defaultTitle(doc))
-    meta(property="og:type", content="article")
-    meta(property="og:url", content=helpers.pageUrl(doc))
-    meta(property="og:image", content=helpers.social.defaultImage(doc))
-    meta(property="og:description", content=helpers.social.defaultDescription(doc))
+    mixin twitterApp
+        meta(name="twitter:card", content="app")
+        meta(name="twitter:site", content=helpers.social.twitterAppSite(doc))
+        meta(name="twitter:creator", content=helpers.social.twitterAppCreator(doc))
+        meta(name="twitter:app:country", content=helpers.social.twitterAppCountry(doc))
+        meta(name="twitter:app:name:iphone", content=helpers.social.twitterAppIphoneName(doc))
+        meta(name="twitter:app:id:iphone", content=helpers.social.twitterAppIphoneId(doc))
+        meta(name="twitter:app:url:iphone", content=helpers.social.twitterAppIphoneUrl(doc))
+        meta(name="twitter:app:name:ipad", content=helpers.social.twitterAppIpadName(doc))
+        meta(name="twitter:app:id:ipad", content=helpers.social.twitterAppIpadId(doc))
+        meta(name="twitter:app:url:ipad", content=helpers.social.twitterAppIpadUrl(doc))
+        meta(name="twitter:app:name:googleplay", content=helpers.social.twitterAppAndroidName(doc))
+        meta(name="twitter:app:id:googleplay", content=helpers.social.twitterAppAndroidId(doc))
+        meta(name="twitter:app:url:googleplay", content=helpers.social.twitterAppAndroidUrl(doc))
+    //- Fallback
+    mixin fallback
+        meta(property="og:title" content=helpers.social.defaultTitle(doc))
+        meta(property="og:type", content="article")
+        meta(property="og:url", content=helpers.pageUrl(doc))
+        meta(property="og:image", content=helpers.social.defaultImage(doc))
+        meta(property="og:description", content=helpers.social.defaultDescription(doc))
 
-meta(name="p:domain_verify", content="48ae95a94ba8fd30f31a003069eeff53")
-if helpers.social.isShareReady(doc)
-    if helpers.social.openGraphCardExists(doc)
-        case helpers.social.openGraphCardType(doc)
-            when 'general_card'
-                +generalCard
-            when 'product-card'
-                +productCard
-            when 'place_card'
-                +placeCard
+    meta(name="p:domain_verify", content="48ae95a94ba8fd30f31a003069eeff53")
+    if helpers.social.isShareReady(doc)
+        if helpers.social.openGraphCardExists(doc)
+            case helpers.social.openGraphCardType(doc)
+                when 'general_card'
+                    +generalCard
+                when 'product-card'
+                    +productCard
+                when 'place_card'
+                    +placeCard
 
-    if helpers.social.twitterCardExists(doc)
-        case helpers.social.twitterCardType(doc)
-            when 'twitter_summary'
-                +twitterSummary
-            when 'twitter_summary_large'
-                +twitterSummaryLarge
-            when 'twitter_app'
-                +twitterApp
-else
-    +fallback
+        if helpers.social.twitterCardExists(doc)
+            case helpers.social.twitterCardType(doc)
+                when 'twitter_summary'
+                    +twitterSummary
+                when 'twitter_summary_large'
+                    +twitterSummaryLarge
+                when 'twitter_app'
+                    +twitterApp
+    else
+        +fallback
 
