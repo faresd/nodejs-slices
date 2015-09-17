@@ -59,6 +59,9 @@ exports.openGraphCardExists = function(doc) {
     return false;
 }
 
+function isOpenGraphCard(sliceType) {
+    return (sliceType == 'general_card' || sliceType == 'product_card' || sliceType == 'place_card');
+}
 
 exports.twitterCardExists = function(doc) {
     var socialSlices = social(doc);
@@ -332,12 +335,6 @@ exports.placeCardImage = function(doc) {
     return placeCard(doc).value.toArray()[0].get('card_image') && placeCard(doc).value.toArray()[0].get('card_image').getView("main") ? placeCard(doc).value.toArray()[0].get('card_image').getView("main").url : defaultImage(doc);
 }
 
-
-
-
-function isOpenGraphCard(sliceType) {
-    return (sliceType == 'general_card' || sliceType == 'product_card' || sliceType == 'place_card');
-}
 
 function getImagesFromDoc(doc) {
     var images = Object.keys(doc.fragments).map(function(key) {
