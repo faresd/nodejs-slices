@@ -291,7 +291,7 @@ exports.productCardCurrency = function(doc) {
 }
 
 exports.productCardSingleImage = function(doc) {
-    return productCard(doc).value.toArray()[0].get('card_image0') && generalCard(doc).value.toArray()[0].get('card_image0').getView("main") ? generalCard(doc).value.toArray()[0].get('card_image0').getView("main").url : defaultImage(doc);
+    return productCard(doc).value.toArray()[0].get('card_image0') && productCard(doc).value.toArray()[0].get('card_image0').getView("main") ? productCard(doc).value.toArray()[0].get('card_image0').getView("main").url : defaultImage(doc);
 }
 
 
