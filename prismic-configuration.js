@@ -1,6 +1,6 @@
 exports.Configuration = {
 
-  apiEndpoint: 'http://fareseng.prismic.io/api',
+  apiEndpoint: 'http://fares2test.prismic.io/api',
 
   // -- Access token if the Master is not open
   // accessToken: 'xxxxxx',

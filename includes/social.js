@@ -26,13 +26,22 @@ function defaultDescription (doc) {
 }
 
 exports.emailTitle = function(doc) {
-    return (email(doc) && email(doc)[0].get('card_title')) ? email(doc)[0].get('card_title').value : defaultTitle(doc)
+    var allEmails = emails(doc)
+    var email = firstValidEmail(allEmails)
+    return (email && email.get('card_title')) ? email.get('card_title').value : defaultTitle(doc)
 }
 
 exports.emailDescription = function(doc) {
-    return (email(doc) && email(doc)[0].get('card_description')) ? email(doc)[0].get('card_description').value : defaultDescription(doc)
+    var allEmails = emails(doc)
+    var email = firstValidEmail(allEmails)
+    return (email && email.get('card_description')) ? email.get('card_description').value : defaultDescription(doc)
 }
 
+function firstValidEmail(emails) {
+    if (emails) {
+        return findFirstValid(emails)
+    }
+}
 
 exports.isShareReady = function(doc) {
     var socialData = social(doc);
@@ -444,7 +453,7 @@ function social(doc) {
     }
 }
 
-function email(doc) {
+function emails(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
         var emailSlices =  socialSlices.map(function(slice) {
