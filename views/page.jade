@@ -25,13 +25,18 @@ head
     link(rel="stylesheet", href="/stylesheets/font.css")
     link(rel="stylesheet", href="/stylesheets/common.css")
     link(rel="stylesheet", href="/stylesheets/social.css")
+    link(rel="stylesheet", href="/stylesheets/vendor/font-awesome.css")
     meta(name="viewport", content="width=device-width, initial-scale=1")
     +socialMeta(doc)
     script(src="/javascripts/vendor/jquery-1.11.2.min.js")
     script(src="/javascripts/slices.js")
 
 body.page
+    div.panel#right-panel
+        include ./sidebar.jade
     div.main
+        a(id="menu-hamburger", href="#right-panel")
+
         div#page-content
             for slice in slices
                 if slice.sliceType != undefined

@@ -94,3 +94,134 @@ em {
     font-family: 'StarterKit';
     content: '\e011';
 }
+
+
+
+/*
+ * Sidebar menu
+ */
+
+/*#right-panel {*/
+    /*display: none;*/
+    /*width: 220px;*/
+    /*padding: 26px 30px;*/
+    /*background-color: #181818;*/
+    /*color: #fff;*/
+/*}*/
+
+#menu-hamburger {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    color: white;
+    text-shadow: 0 0 2px black;
+}
+
+#menu-hamburger::before {
+    font-family: 'StarterKit';
+    content: '\e006';
+}
+
+/*
+ * Sidebar content
+ */
+#right-panel li {
+    list-style: none;
+}
+
+#right-panel a {
+    color: #FFF;
+}
+
+#right-panel .search {
+    border: solid 1px #4e4e4e;
+    padding: 6px 20px;
+    background: #181818;
+    border-radius: 20px;
+}
+
+#right-panel .search input {
+    border: 0;
+    background: #181818;
+    color: #FFF;
+    font-size: 16px;
+    max-width: 130px;
+}
+
+#right-panel .search input:focus {
+    outline: none;
+}
+
+#right-panel .search-icon {
+    float: right;
+}
+
+#right-panel .sidebar-section {
+    padding-top: 30px;
+}
+
+#right-panel .sidebar-section h3 {
+    text-transform: uppercase;
+    font-size: 16px;
+    margin: 0;
+}
+
+#right-panel .sidebar-section ul {
+    margin-top: 8px;
+}
+
+#right-panel .sidebar-section li {
+    padding: 10px;
+}
+
+#right-panel .sidebar-section li a {
+    font-size: 14px;
+}
+
+
+
+/* Panel opening and closing animation lasts 200ms */
+body {
+    transition: margin-right .2s;
+}
+
+/* Position panel */
+#right-panel {
+    background-color: #181818;
+    color: #fff;
+    right: -280px;
+    position: fixed;
+    top: 0;
+    width: 220px;
+    padding: 26px 30px;
+    height: 100%;
+    transition: right .2s;
+    z-index: 99999;
+}
+
+
+
+body.ps-active-right {
+    margin-right: 280px;
+}
+
+body.ps-active-right #right-panel {
+    right: 0;
+}
+
+@media (min-width: 768px) {
+
+    #menu-hamburger {
+        padding: 30px;
+        font-size: 22px;
+    }
+
+    #menu-hamburger::before {
+        font-size: 22px;
+    }
+}
+
+a {
+    text-decoration: none;
+}
