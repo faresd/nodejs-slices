@@ -1,4 +1,3 @@
-
 exports.exists = function(array, funktion) {
     var i = array.length;
     while (i--) {
@@ -8,7 +7,6 @@ exports.exists = function(array, funktion) {
     }
 }
 
-
 exports.findFirst  = function(array, funktion) {
     var i = array.length;
     while (i--) {
@@ -17,7 +15,6 @@ exports.findFirst  = function(array, funktion) {
         }
     }
 }
-
 
 exports.findFirstValid  = function(array) {
     var firstValid = null;

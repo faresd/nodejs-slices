@@ -225,3 +225,10 @@ body.ps-active-right #right-panel {
 a {
     text-decoration: none;
 }
+@media (max-width: 767px) {
+
+    #menu-hamburger {
+        padding: 15px 20px;
+        font-size: 18px;
+    }
+}

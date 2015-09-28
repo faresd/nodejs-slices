@@ -35,6 +35,31 @@ exports.getDocuments = function(ctx, ids, callback) {
   }
 };
 
+// get next pages recursively.
+function getPages(ctx, pages, errors, page, callback) {
+    var getNextPage  = function(ctx, previousPages, previousErrors, page, maxPages) {
+        ctx.api.forms('everything').ref(ctx.ref).query('[[:d = at(document.type, "page")]]').pageSize(2).page(page).submit(function (err, response) {
+            if (response) {
+                var mergedPages = previousPages.concat(response.results),
+                    mergedErrors = previousErrors.concat(err)
+                if (response.next_page && maxPages > 0) {
+                    getNextPage(ctx, mergedPages, mergedErrors, page + 1, maxPages -1)
+                } else {
+                    callback(mergedErrors, mergedPages);
+                }
+            } else {
+                callback(previousErrors, previousPages);
+            }
+        })
+    }
+    getNextPage(ctx, pages, errors, page, 99)
+}
+
+
+exports.getAllPages = function(ctx, callback) {
+     getPages(ctx, [], [], 0, callback)
+}
+
 exports.getBookmark = function(ctx, bookmark, callback) {
   var id = ctx.api.bookmarks[bookmark];
   if(id) {
