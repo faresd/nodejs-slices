@@ -1,3 +1,6 @@
+var utils = require('../includes/utils');
+
+
 exports.pageUrl = function(req){
     return function(doc) {
         var host = req.get('host')
@@ -13,7 +16,7 @@ function defaultImage (doc) {
         return;
     }
     var images = getImagesFromDoc(doc)
-    return findFirstValid(images).getView('main').url
+    return utils.findFirstValid(images).getView('main').url
 }
 exports.defaultDescription = defaultDescription
 
@@ -21,7 +24,7 @@ function defaultDescription (doc) {
     if (!doc) {
         return;
     }
-    var firstStructuredText = findFirstValid(getStructuredTextsFromDoc(doc))
+    var firstStructuredText = utils.findFirstValid(getStructuredTextsFromDoc(doc))
     return getDescriptionFromStructuredText(firstStructuredText)
 }
 
@@ -39,7 +42,7 @@ exports.emailDescription = function(doc) {
 
 function firstValidEmail(emails) {
     if (emails) {
-        return findFirstValid(emails)
+        return utils.findFirstValid(emails)
     }
 }
 
@@ -52,7 +55,7 @@ exports.isShareReady = function(doc) {
 exports.openGraphCardExists = function(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
-        return exists(socialSlices, function(slice) {
+        return utils.exists(socialSlices, function(slice) {
             return isOpenGraphCard(slice.sliceType)
         })
     }
@@ -67,7 +70,7 @@ exports.twitterCardExists = function(doc) {
     var socialSlices = social(doc);
 
     if(socialSlices) {
-        return exists(socialSlices, function(slice) {
+        return utils.exists(socialSlices, function(slice) {
             return isTwitterCard(slice.sliceType)
         })
     }
@@ -82,7 +85,7 @@ function isTwitterCard(sliceType) {
 exports.twitterCardType = function(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
-        var foundSlice = findFirst(socialSlices, function(slice) {
+        var foundSlice = utils.findFirst(socialSlices, function(slice) {
             return isTwitterCard(slice.sliceType)
         })
         return foundSlice.sliceType
@@ -91,7 +94,7 @@ exports.twitterCardType = function(doc) {
 function twitterSummary(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
-        var foundSlice = findFirst(socialSlices, function(slice) {
+        var foundSlice = utils.findFirst(socialSlices, function(slice) {
             return slice.sliceType == 'twitter_summary'
         })
         return foundSlice
@@ -120,7 +123,7 @@ exports.twitterSummaryImage = function(doc) {
 function twitterSummaryLarge(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
-        var foundSlice = findFirst(socialSlices, function(slice) {
+        var foundSlice = utils.findFirst(socialSlices, function(slice) {
             return slice.sliceType == 'twitter_summary_large'
         })
         return foundSlice
@@ -150,7 +153,7 @@ exports.twitterSummaryLargeCreator = function(doc) {
 function twitterApp(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
-        var foundSlice = findFirst(socialSlices, function(slice) {
+        var foundSlice = utils.findFirst(socialSlices, function(slice) {
             return slice.sliceType == 'twitter_app'
         })
         return foundSlice
@@ -209,30 +212,10 @@ exports.twitterAppAndroidUrl = function(doc) {
     return twitterApp(doc).value.toArray()[0].get('android_url') ? twitterApp(doc).value.toArray()[0].get('android_url').value : '';
 }
 
-
-function exists(array, funktion) {
-    var i = array.length;
-    while (i--) {
-        if (funktion(array[i])) {
-            return true;
-        }
-    }
-}
-
-
-function findFirst(array, funktion) {
-    var i = array.length;
-    while (i--) {
-        if (funktion(array[i])) {
-            return array[i];
-        }
-    }
-}
-
 exports.openGraphCardType = function(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
-        var slice = findFirst(socialSlices, function(slice) {
+        var slice = utils.findFirst(socialSlices, function(slice) {
             return isOpenGraphCard(slice.sliceType)
         })
         return slice.sliceType
@@ -242,7 +225,7 @@ exports.openGraphCardType = function(doc) {
 function generalCard(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
-        var slice = findFirst(socialSlices, function(slice) {
+        var slice = utils.findFirst(socialSlices, function(slice) {
             return slice.sliceType == "general_card"
         })
         return slice
@@ -266,7 +249,7 @@ exports.generalCardDescription = function(doc) {
 function productCard(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
-        var slice = findFirst(socialSlices, function(slice) {
+        var slice = utils.findFirst(socialSlices, function(slice) {
             return slice.sliceType == "product_card"
         })
         return slice
@@ -307,7 +290,7 @@ exports.productCardImages =  function(doc){
 function placeCard(doc) {
     var socialSlices = social(doc);
     if(socialSlices) {
-        var slice = findFirst(socialSlices, function(slice) {
+        var slice = utils.findFirst(socialSlices, function(slice) {
             return slice.sliceType == "place_card"
         })
         return slice
@@ -349,7 +332,7 @@ function getImagesFromDoc(doc) {
 
         } else return []
     })
-    return flattenArray(images)
+    return utils.flattenArray(images)
 }
 
 function getImagesFromSliceZone(sliceZone) {
@@ -357,7 +340,7 @@ function getImagesFromSliceZone(sliceZone) {
         return getImagesFromSlice(slice)
     })
 
-    return flattenArray(imagesInSliceZone)
+    return utils.flattenArray(imagesInSliceZone)
 }
 
 function getImagesFromSlice(slice) {
@@ -374,7 +357,7 @@ function getImagesFromSlice(slice) {
         })
         return images.filter(function(image) {return !!image})
     })
-    var imagesFlattened = flattenArray(itemsImages)
+    var imagesFlattened = utils.flattenArray(itemsImages)
     return imagesFlattened
 }
 
@@ -382,22 +365,6 @@ function getFirstImageFromStructuredText(structuredText) {
     if(structuredText.getFirstImage && structuredText.getFirstImage()) {
         return structuredText.getFirstImage();
     } else return;
-}
-
-function findFirstValid(array) {
-    var firstValid = null;
-    for (var i = 0; i < array.length; i++) {
-        if (array[i] != undefined){
-            firstValid = array[0]
-            break;
-        }
-    }
-
-    return firstValid;
-}
-
-function flattenArray(array) {
-    return [].concat.apply([], array)
 }
 
 
@@ -410,7 +377,7 @@ function getStructuredTextsFromDoc(doc) {
             return [doc.getStructuredText(key)]
         } else return []
     })
-    return flattenArray(structuredTexts.filter(function(st) {return !!st}))
+    return utils.flattenArray(structuredTexts.filter(function(st) {return !!st}))
 
 }
 
@@ -426,10 +393,10 @@ function getStructuredTextsFromSliceZone(sliceZone) {
             })
             return structureTexts;
         })
-        var structureTextsFlattened = flattenArray(itemsStructuredText)
+        var structureTextsFlattened = utils.flattenArray(itemsStructuredText)
         return structureTextsFlattened
     })
-    return flattenArray(structureTextsInSliceZone)
+    return utils.flattenArray(structureTextsInSliceZone)
 }
 
 function getDescriptionFromStructuredText(structuredText) {
@@ -458,7 +425,7 @@ function emails(doc) {
                 return slice.value.toArray()
             }
         })
-        return flattenArray(emailSlices)
+        return utils.flattenArray(emailSlices)
     }
 }
 
@@ -466,7 +433,7 @@ function defaultTitle(doc) {
     if (!doc) {
         return;
     }
-    var firstStructuredText = findFirstValid(getStructuredTextsFromDoc(doc))
+    var firstStructuredText = utils.findFirstValid(getStructuredTextsFromDoc(doc))
     return getTitleFromStructuredText(firstStructuredText)
 }
 
