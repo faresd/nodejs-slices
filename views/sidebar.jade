@@ -5,10 +5,12 @@ div.search
         input(type = "text", placeholder = "search", name = "q")
 div.sidebar-section
     h3.blog-nav-item
-for page in allPages
+- var children = helpers.pages.getHomeChildren(home)
     div.sidebar-section
-        h3 !{page.uid}
+        h3 !{helpers.pages.pageLink(home, helpers.pageUrl(doc))}
         ul
+            each child in children
+                li !{helpers.pages.pageLink(child)}
 
 div.sidebar-section
     h3 Archives

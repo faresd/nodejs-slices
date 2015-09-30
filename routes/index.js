@@ -1,5 +1,6 @@
 var prismic = require('../prismic-helpers');
 var social = require('../includes/social');
+var pages = require('../includes/pages');
 
 // -- Display all documents
 
@@ -50,20 +51,22 @@ exports.page = prismic.route(function(req, res, ctx) {
   var id = req.params['uid']
   getPage(id, ctx, res, function(doc) {
     prismic.getAllPages(ctx, function(errors, allPages) {
-      console.log(allPages, "allPages")
       if (errors[0]) { prismic.onPrismicError(errors[0], req, res); return; }
       var slices =  doc.getSliceZone("page.body").value
-      console.log(allPages, "allPages")
-      res.render('page', {
-        doc: doc,
-        slices: slices,
-        helpers: {
-          buildMixinName:buildMixinName,
-          socialPluginEnabled:socialPluginEnabled(doc),
-          pageUrl: social.pageUrl(req),
-          social: social
-        },
-        allPages: allPages
+      prismic.home(ctx, 'home', function(home) {
+        res.render('page', {
+          doc: doc,
+          slices: slices,
+          helpers: {
+            buildMixinName:buildMixinName,
+            socialPluginEnabled:socialPluginEnabled(doc),
+            pageUrl: social.pageUrlFromRequest(req),
+            social: social,
+            pages: pages
+          },
+          allPages: allPages,
+          home: home
+        })
       });
     })
   })

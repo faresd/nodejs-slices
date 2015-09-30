@@ -1,7 +1,7 @@
 var utils = require('../includes/utils');
 
 
-exports.pageUrl = function(req){
+exports.pageUrlFromRequest = function(req){
     return function(doc) {
         var host = req.get('host')
         var scheme = "http://";

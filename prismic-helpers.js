@@ -55,8 +55,81 @@ function getPages(ctx, pages, errors, page, callback) {
     getNextPage(ctx, pages, errors, page, 99)
 }
 
+exports.home = home;
 
-exports.getAllPages = function(ctx, callback) {
+function home(ctx, bookmark, callback) {
+    var homeId = ctx.api.bookmarks[bookmark]
+    if (!homeId) {
+        return []
+    } else {
+        getAllPages(ctx, function(errors, pages) {
+            var home = pages.filter(function(obj) {return obj.id == homeId})[0]
+            //var home = pages.homeId
+            if (!home) {
+                callback([])
+            } else {
+                var obj = {
+                    label: 'Home',
+                    url: ctx.linkResolver(home),
+                    external: false,
+                    children: getPageChildren(ctx, home, pages)
+
+                }
+                callback(obj)
+            }
+        })
+    }
+}
+
+function getPageChildren(ctx, page, pages) {
+    var path = page.type + '.children'
+    var group = page.get(path)
+    if (group) {
+        var childrenById = [];
+        group.toArray().forEach(function(item) {
+            var link = item.getLink('link');
+            if (link instanceof Prismic.Fragments.DocumentLink) {
+                var getPageIfExists = pages.filter(function(obj) {return obj.id == link.id})[0]
+                if (getPageIfExists) {
+                    childrenById[link.id] = getPageIfExists;
+                }
+            }
+        })
+        var result = []
+        group.toArray().forEach(function(item) {
+            var label = item.getText('label');
+            var link = item.getLink('link');
+            var children = []
+            if (link instanceof Prismic.Fragments.DocumentLink && !link.isBroken) {
+                var getPageIfExists = pages.filter(function(obj) {return obj.id == link.id})[0]
+                if (getPageIfExists) {
+                    var doc = childrenById[link.id];
+                    if (!label) {
+                        label = 'No label';
+                    }
+                    children = getPageChildren(ctx, doc, pages);
+
+                }
+            }
+
+            var obj = {
+                label: label,
+                url: ctx.linkResolver(link),
+                external: link instanceof Prismic.Fragments.WebLink,
+                children: children
+
+            }
+            result.push(obj)
+
+        })
+        return result;
+    }
+
+}
+
+exports.getAllPages = getAllPages
+
+function getAllPages(ctx, callback) {
      getPages(ctx, [], [], 0, callback)
 }
 
@@ -94,5 +167,3 @@ exports.route = function(callback) {
     });
   };
 };
-
-
