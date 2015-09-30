@@ -89,9 +89,9 @@ function getPageChildren(ctx, page, pages) {
         group.toArray().forEach(function(item) {
             var link = item.getLink('link');
             if (link instanceof Prismic.Fragments.DocumentLink) {
-                var getPageIfExists = pages.filter(function(obj) {return obj.id == link.id})[0]
-                if (getPageIfExists) {
-                    childrenById[link.id] = getPageIfExists;
+                var foundPage = pages.filter(function(obj) {return obj.id == link.id})[0]
+                if (foundPage) {
+                    childrenById[link.id] = foundPage;
                 }
             }
         })
@@ -108,7 +108,6 @@ function getPageChildren(ctx, page, pages) {
                         label = 'No label';
                     }
                     children = getPageChildren(ctx, doc, pages);
-
                 }
             }
 

@@ -4,16 +4,15 @@ div.search
     form(method="get", action="/search")
         input(type = "text", placeholder = "search", name = "q")
 div.sidebar-section
-    h3.blog-nav-item
+    h3.blog-nav-item !{helpers.pages.pageLink(home, helpers.pageUrl(doc))}
 - var children = helpers.pages.getHomeChildren(home)
+each child in children
     div.sidebar-section
-        h3 !{helpers.pages.pageLink(home, helpers.pageUrl(doc))}
+        h3 !{helpers.pages.pageLink(child, helpers.pageUrl(doc))}
         ul
-            each child in children
-                li !{helpers.pages.pageLink(child)}
+            if(child.children)
+                each subChild in child.children
+                    li !{helpers.pages.pageLink(subChild)}
 
 div.sidebar-section
     h3 Archives
-    ul
-        li
-            a
