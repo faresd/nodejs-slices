@@ -180,12 +180,6 @@ em {
 }
 
 
-
-/* Panel opening and closing animation lasts 200ms */
-body {
-    transition: margin-right .2s;
-}
-
 /* Position panel */
 #right-panel {
     background-color: #181818;
@@ -201,16 +195,21 @@ body {
 }
 
 
-
-body.ps-active-right {
-    margin-right: 280px;
-}
-
 body.ps-active-right #right-panel {
     right: 0;
 }
 
 @media (min-width: 768px) {
+
+    /* Panel opening and closing animation lasts 200ms */
+    body {
+        transition: margin-right .2s;
+    }
+
+    body.ps-active-right {
+        margin-right: 280px;
+    }
+
 
     #menu-hamburger {
         padding: 30px;
@@ -225,7 +224,15 @@ body.ps-active-right #right-panel {
 a {
     text-decoration: none;
 }
+
 @media (max-width: 767px) {
+    .main {
+        transition: transform .2s;
+    }
+
+    body.ps-active-right .main {
+        transform: translateX(-280px);
+    }
 
     #menu-hamburger {
         padding: 15px 20px;
