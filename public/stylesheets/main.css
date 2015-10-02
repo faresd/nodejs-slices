@@ -179,29 +179,19 @@ em {
     font-size: 14px;
 }
 
-
-/* Position panel */
-#right-panel {
-    background-color: #181818;
-    color: #fff;
-    right: -280px;
-    position: fixed;
-    top: 0;
-    width: 220px;
-    padding: 26px 30px;
-    height: 100%;
-    transition: right .2s;
-    z-index: 99999;
+#menu-hamburger {
+    padding: 30px;
+    font-size: 22px;
 }
 
-
-body.ps-active-right #right-panel {
-    right: 0;
+#menu-hamburger::before {
+    font-size: 22px;
 }
+
 
 @media (min-width: 768px) {
 
-    /* Panel opening and closing animation lasts 200ms */
+/*Panel opening and closing animation lasts 200ms */
     body {
         transition: margin-right .2s;
     }
@@ -211,14 +201,25 @@ body.ps-active-right #right-panel {
     }
 
 
-    #menu-hamburger {
-        padding: 30px;
-        font-size: 22px;
+/*Position panel */
+    #right-panel {
+        background-color: #181818;
+        color: #fff;
+        right: -280px;
+        position: fixed;
+        top: 0;
+        width: 220px;
+        padding: 26px 30px;
+        height: 100%;
+        transition: right .2s;
+        z-index: 99999;
     }
 
-    #menu-hamburger::before {
-        font-size: 22px;
+
+    body.ps-active-right #right-panel {
+        right: 0;
     }
+
 }
 
 a {
@@ -226,16 +227,28 @@ a {
 }
 
 @media (max-width: 767px) {
-    .main {
+    /* Panel opening and closing animation lasts 200ms */
+    body {
         transition: transform .2s;
     }
 
-    body.ps-active-right .main {
+    /* Slide page 200px to the right when panel is opened */
+    body.ps-active-right {
+        -webkit-transform: translateX(-280px);
         transform: translateX(-280px);
+        -moz-transform: translateX(-280px);
     }
 
-    #menu-hamburger {
-        padding: 15px 20px;
-        font-size: 18px;
+    /* Position panel */
+    #right-panel {
+        position: fixed;
+        top: 0;
+        right: -280px;
+        width: 220px;
+        height: 100%;  /* remember to set 100% height for all its parents too, including html and body */
+        background-color: #181818;
+        color: #fff;
+        padding: 26px 30px;
+        z-index: 99;
     }
 }
