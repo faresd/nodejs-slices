@@ -1,3 +1,5 @@
+var prismic = require('./prismic-helpers');
+
 exports.Configuration = {
 
   apiEndpoint: 'http://fares2test.prismic.io/api',
@@ -10,9 +12,37 @@ exports.Configuration = {
   // clientSecret: 'xxxxxx',
 
   // -- Links resolution rules
-  linkResolver: function(doc) {
-    if (doc.isBroken) return false;
-    if (doc.type == "page") return "/website-starter-sample-page"
+  linkResolver: function(ctx, doc, callback) {
+    if (doc.isBroken) callback(null);
+
+    if (doc.type == "page")  {
+      var homeId = ctx.api.bookmarks['home']
+      if (doc.id == homeId) {
+        callback('/')
+      } else {
+        prismic.pagePath(ctx, doc.uid, function(path) {
+
+        });
+
+      }
+    }
+
+    return '/documents/' + doc.id + '/' + doc.slug;
+  },
+  linkResolverFromPages: function(ctx, doc, pages) {
+    if (doc.isBroken) callback(null);
+
+    if (doc.type == "page")  {
+      var homeId = ctx.api.bookmarks['home']
+      if (doc.id == homeId) {
+        return '/'
+      } else {
+        var path = prismic.pagePathFromPages(doc.uid, pages)
+        return path
+
+      }
+    }
+
     return '/documents/' + doc.id + '/' + doc.slug;
   },
 

@@ -15,7 +15,7 @@ mixin featuredItemsMini(slice)
 
                 - var readMore = featuredItem.get('read-more')
                 - var readMoreLabel = featuredItem.get('read-more-label')
-                - var url = readMore ? ctx.linkResolver(readMore): null
+                - var url = readMore ? ctx.linkResolverFromPages(ctx, readMore, allPages): null
                 if readMoreLabel
                     - var content = readMoreLabel ? readMoreLabel.asText() : ''
                     + button(url, content)

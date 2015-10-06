@@ -12,7 +12,7 @@ block body
     ul#list
         each doc in docs.results
             li
-                a(href=ctx.linkResolver(doc)) #{doc.slug}
+                a(href=ctx.linkResolverFromPages(ctx, doc, docs.results)) #{doc.slug}
     hr
     if docs.prev_page
         a(href='/?page=#{docs.page - 1}') « Previous Page
