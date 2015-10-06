@@ -66,20 +66,16 @@ function home(ctx, bookmark, callback) {
     } else {
         getAllPages(ctx, function(errors, pages) {
             var home = pages.filter(function(obj) {return obj.id == homeId})[0]
-            //var home = pages.homeId
             if (!home) {
                 callback([])
             } else {
-                ctx.linkResolver(ctx, home, function(path) {
-                    var obj = {
-                        label: 'Home',
-                        url: path,
-                        external: false,
-                        children: getPageChildren(ctx, home, pages)
-                    }
-                    callback(obj)
-                })
-
+              var obj = {
+                  label: 'Home',
+                  url: ctx.linkResolver(home),
+                  external: false,
+                  children: getPageChildren(ctx, home, pages)
+              }
+              callback(obj)
             }
         })
     }
@@ -117,7 +113,7 @@ function getPageChildren(ctx, page, pages) {
 
             var obj = {
                 label: label,
-                url: ctx.linkResolverFromPages(ctx, link, pages),
+                url: ctx.linkResolver(link),
                 external: link instanceof Prismic.Fragments.WebLink,
                 children: children
 
@@ -127,58 +123,6 @@ function getPageChildren(ctx, page, pages) {
         })
         return result;
     }
-}
-
-
-
-function getPageChildrenAsync(ctx, page, pages, callback) {
-    var path = page.type + '.children'
-    var group = page.get(path)
-    if (group) {
-        var childrenById = [];
-        group.toArray().forEach(function(item) {
-            var link = item.getLink('link');
-            if (link instanceof Prismic.Fragments.DocumentLink) {
-                var foundPage = pages.filter(function(obj) {return obj.id == link.id})[0]
-                if (foundPage) {
-                    childrenById[link.id] = foundPage;
-                }
-            }
-        })
-        var items = group.toArray()
-        processNextItem(items.length -1, [])
-
-        function processNextItem(item, currentItemIndex, results) {
-            var label = item.getText('label');
-            var link = item.getLink('link');
-            var children = []
-            if (link instanceof Prismic.Fragments.DocumentLink && !link.isBroken) {
-                var getPageIfExists = pages.filter(function(obj) {return obj.id == link.id})[0]
-                if (getPageIfExists) {
-                    var doc = childrenById[link.id];
-                    if (!label) {
-                        label = 'No label';
-                    }
-                    children = getPageChildren(ctx, doc, pages);
-                }
-            }
-            ctx.linkResolver(ctx, link, function(path) {
-                var obj = {
-                    label: label,
-                    url: path,
-                    external: link instanceof Prismic.Fragments.WebLink,
-                    children: children
-
-                }
-                if (currentItemIndex == 0) {
-                    callback(results)
-                } else {
-                    processNextItem(items[currentItemIndex--], results.push(obj))
-                }
-            })
-        }
-    }
-
 }
 
 exports.getAllPages = getAllPages
@@ -201,30 +145,6 @@ exports.onPrismicError = Configuration.onPrismicError;
 
 // -- Route wrapper that provide a "prismic context" to the underlying function
 
-exports.routeSync = function(callback) {
-  return function(req, res) {
-    var accessToken = (req.session && req.session['ACCESS_TOKEN']) || Configuration.accessToken;
-    exports.getApiHome(accessToken, function(err, Api) {
-      if (err) {
-          exports.onPrismicError(err, req, res);
-          return;
-      }
-      var ctx = {
-            api: Api,
-            ref: req.cookies[Prismic.experimentCookie] || req.cookies[Prismic.previewCookie] || Api.master(),
-            linkResolver: function(doc) {
-              return Configuration.linkResolver(doc);
-            },
-            linkResolverFromPages: function(doc) {
-              return Configuration.linkResolver(doc);
-            }
-          };
-      res.locals.ctx = ctx;
-      callback(req, res, ctx);
-    });
-  };
-};
-
 exports.route = function(callback) {
   return function(req, res) {
     var accessToken = (req.session && req.session['ACCESS_TOKEN']) || Configuration.accessToken;
@@ -234,60 +154,50 @@ exports.route = function(callback) {
           return;
       }
       var ctx = {
-            api: Api,
-            ref: req.cookies[Prismic.experimentCookie] || req.cookies[Prismic.previewCookie] || Api.master(),
-            linkResolver: function(ctx, doc, callback) {
-              return Configuration.linkResolver(ctx, doc, callback);
-            },
-            linkResolverFromPages: function(ctx, doc, pages) {
-              return Configuration.linkResolverFromPages(ctx, doc, pages);
-            }
-          };
-      res.locals.ctx = ctx;
-      callback(req, res, ctx);
+        api: Api,
+        ref: req.cookies[Prismic.experimentCookie] || req.cookies[Prismic.previewCookie] || Api.master()
+      }
+      getAllPages(ctx, function (errors, pages) {
+        var childrenParents = buildChildParentDict(pages)
+        var linkResolver = function(doc) {
+          var parentId = childrenParents[doc.id]
+          var parentPage = pages.filter(function(p) {
+            return p.id == parentId
+          })[0]
+          var parentUid  = parentPage?  parentPage.uid : null
+          return Configuration.linkResolver(ctx, doc, parentUid);
+        }
+        ctx.linkResolver = linkResolver
+        res.locals.ctx = ctx;
+        callback(req, res, ctx);
+      })
     });
   };
 };
 
-exports.pagePathFromPages = pagePathFromPages
-
-function pagePathFromPages(uid, pages) {
-    var pathArray = [uid]
-    var parent = findParent(pages, uid)
-    if (parent) pathArray.push(parent.uid)
-    return  pathArray.map(function(piece) {return encodeURIComponent(piece)}).reverse().join('\/')
-}
-
-
-
 exports.pagePath = pagePath
 
-function pagePath(ctx, uid, callback) {
-    getAllPages(ctx, function (errors, pages) {
-        var pathArray = [uid]
-        var parent = findParent(pages, uid)
-        if (parent) pathArray.push(parent.uid)
-        var path =  pathArray.map(function(piece) {return encodeURIComponent(piece)}).reverse().join('\/')
-        callback(path);
-    })
+function pagePath(uid, parentUid) {
+  if(parentUid) {
+    var path = [parentUid, uid].map(function(piece) {return encodeURIComponent(piece)}).join('\/')
+    return path
+  }
 }
 
-
-function findParent(pages, uid) {
-    var parent = null
+function buildChildParentDict(pages) {
+    var childParent = {}
     pages.forEach(function(page) {
         var localPath = page.type + '.children'
         var group = page.get(localPath)
         if (group && group.toArray().length > 0) {
             var items = group.toArray()
-            var foundAsChild = items.filter(function(item) {
+            items.forEach(function(item) {
                 if (item) {
                     var link = item.getLink('link')
-                    return link.uid == uid
+                    childParent[link.id] = page.id
                 }
-            })[0]
-            if (foundAsChild) parent = page
+            })
         }
     })
-    return parent;
+    return childParent
 }

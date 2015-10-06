@@ -12,37 +12,17 @@ exports.Configuration = {
   // clientSecret: 'xxxxxx',
 
   // -- Links resolution rules
-  linkResolver: function(ctx, doc, callback) {
-    if (doc.isBroken) callback(null);
-
-    if (doc.type == "page")  {
-      var homeId = ctx.api.bookmarks['home']
-      if (doc.id == homeId) {
-        callback('/')
-      } else {
-        prismic.pagePath(ctx, doc.uid, function(path) {
-
-        });
-
-      }
-    }
-
-    return '/documents/' + doc.id + '/' + doc.slug;
-  },
-  linkResolverFromPages: function(ctx, doc, pages) {
-    if (doc.isBroken) callback(null);
+  linkResolver: function(ctx, doc, parentId) {
+    if (doc.isBroken) return null
 
     if (doc.type == "page")  {
       var homeId = ctx.api.bookmarks['home']
       if (doc.id == homeId) {
         return '/'
       } else {
-        var path = prismic.pagePathFromPages(doc.uid, pages)
-        return path
-
+        return prismic.pagePath(doc.uid, parentId)
       }
     }
-
     return '/documents/' + doc.id + '/' + doc.slug;
   },
 
