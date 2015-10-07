@@ -3,9 +3,7 @@ var Prismic = require('prismic.io').Prismic,
     http = require('http'),
     https = require('https'),
     url = require('url'),
-    querystring = require('querystring'),
-    utils = require('./includes/utils');
-
+    querystring = require('querystring');
 
 exports.previewCookie = Prismic.previewCookie;
 
@@ -40,7 +38,7 @@ exports.getDocuments = function(ctx, ids, callback) {
 // get next pages recursively.
 function getPages(ctx, pages, errors, page, callback) {
     var getNextPage  = function(ctx, previousPages, previousErrors, page, maxPages) {
-        ctx.api.forms('everything').ref(ctx.ref).query('[[:d = at(document.type, "page")]]').pageSize(2).page(page).submit(function (err, response) {
+        ctx.api.forms('everything').ref(ctx.ref).query('[[:d = any(document.type, ["page", "bloghome"])]]').pageSize(2).page(page).submit(function (err, response) {
             if (response) {
                 var mergedPages = previousPages.concat(response.results),
                     mergedErrors = previousErrors.concat(err)
@@ -158,13 +156,11 @@ exports.route = function(callback) {
         ref: req.cookies[Prismic.experimentCookie] || req.cookies[Prismic.previewCookie] || Api.master()
       }
       getAllPages(ctx, function (errors, pages) {
-        var childrenParents = buildChildParentDict(pages)
+        var homeId = ctx.api.bookmarks["home"]
+        var bloghomeId = ctx.api.bookmarks["bloghome"]
+        var childrenParents = buildChildParentDict(pages, homeId, bloghomeId)
         var linkResolver = function(doc) {
-          var parentId = childrenParents[doc.id]
-          var parentPage = pages.filter(function(p) {
-            return p.id == parentId
-          })[0]
-          var parentUid  = parentPage?  parentPage.uid : null
+          var parentUid = childrenParents[doc.uid]
           return Configuration.linkResolver(ctx, doc, parentUid);
         }
         ctx.linkResolver = linkResolver
@@ -181,23 +177,29 @@ function pagePath(uid, parentUid) {
   if(parentUid) {
     var path = [parentUid, uid].map(function(piece) {return encodeURIComponent(piece)}).join('\/')
     return path
-  }
+  } else return uid
 }
 
-function buildChildParentDict(pages) {
+function buildChildParentDict(pages, homeId, bloghomeId) {
     var childParent = {}
     pages.forEach(function(page) {
+      if(page.id != homeId) {
         var localPath = page.type + '.children'
         var group = page.get(localPath)
         if (group && group.toArray().length > 0) {
-            var items = group.toArray()
-            items.forEach(function(item) {
-                if (item) {
-                    var link = item.getLink('link')
-                    childParent[link.id] = page.id
-                }
-            })
+          var items = group.toArray()
+          items.forEach(function(item) {
+            if (item) {
+              var link = item.getLink('link')
+              var parentTitle = null;
+              if (link.id == bloghomeId) {
+                parentTitle = 'blog'
+              } else parentTitle = page.uid;
+              childParent[link.uid] = parentTitle
+            }
+          })
         }
+      }
     })
     return childParent
 }
