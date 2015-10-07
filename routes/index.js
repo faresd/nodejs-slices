@@ -48,8 +48,11 @@ function getPage(uid, ctx, res, callback) {
 }
 
 exports.page = prismic.route(function(req, res, ctx) {
-  var id = req.params['uid']
-  getPage(id, ctx, res, function(doc) {
+  var parentUid = req.params['uid']
+  var subUid = req.params['subuid']
+  //[Todo: a quick solution to handle a child page, should introduce a better dynamic way to handel multiple levels children]
+  var pageUid = subUid? subUid : parentUid
+  getPage(pageUid, ctx, res, function(doc) {
     prismic.getAllPages(ctx, function(errors, allPages) {
       if (errors[0]) { prismic.onPrismicError(errors[0], req, res); return; }
       var slices =  doc.getSliceZone("page.body").value

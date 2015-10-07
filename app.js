@@ -35,7 +35,9 @@ app.use(errorHandler());
 // Routes
 app.route('/').get(routes.index);
 app.route('/preview').get(routes.preview);
-app.route('/:uid').get(routes.page);
+
+//[TODO: a quick solution to handle a child page, should introduce a better dynamic way to handel multiple levels children].
+app.route('/:uid/:subuid*?').get(routes.page);
 
 var PORT = app.get('port');
 
