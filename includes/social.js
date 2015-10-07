@@ -16,7 +16,9 @@ function defaultImage (doc) {
         return;
     }
     var images = getImagesFromDoc(doc)
-    return utils.findFirstValid(images).getView('main').url
+    if(utils.findFirstValid(images) && utils.findFirstValid(images).getView('main') ){
+        return utils.findFirstValid(images).getView('main').url
+    } else return;
 }
 exports.defaultDescription = defaultDescription
 
@@ -26,6 +28,15 @@ function defaultDescription (doc) {
     }
     var firstStructuredText = utils.findFirstValid(getStructuredTextsFromDoc(doc))
     return getDescriptionFromStructuredText(firstStructuredText)
+}
+exports.defaultTitle = defaultTitle
+
+function defaultTitle(doc) {
+    if (!doc) {
+        return;
+    }
+    var firstStructuredText = utils.findFirstValid(getStructuredTextsFromDoc(doc))
+    return getTitleFromStructuredText(firstStructuredText)
 }
 
 exports.emailTitle = function(doc) {
@@ -411,10 +422,13 @@ function social(doc) {
     if(!doc) {
         return;
     }
-    var socialData = doc.getSliceZone(doc.type + '.social').value;
-    if(socialData) {
-        return socialData;
-    }
+    if(doc.getSliceZone(doc.type + '.social')) {
+        var socialData = doc.getSliceZone(doc.type + '.social').value;
+        if(socialData) {
+            return socialData;
+        }
+    } else return;
+
 }
 
 function emails(doc) {
@@ -429,13 +443,7 @@ function emails(doc) {
     }
 }
 
-function defaultTitle(doc) {
-    if (!doc) {
-        return;
-    }
-    var firstStructuredText = utils.findFirstValid(getStructuredTextsFromDoc(doc))
-    return getTitleFromStructuredText(firstStructuredText)
-}
+
 
 function getTitleFromStructuredText(structuredText) {
     if(structuredText) {

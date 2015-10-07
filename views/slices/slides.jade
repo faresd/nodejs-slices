@@ -5,7 +5,7 @@ mixin slides(slice)
             a(href='#').arrow-prev &nbsp;
         - var index = 0;
         each slide in slides
-            - var illustration = slide.get("illustration").getView("main")
+            - var illustration = slide.get("illustration")? slide.get("illustration").getView("main") : null;
             - var illustrationUrl = illustration ? illustration.url : ''
             - var readMore = slide.get("read-more")
             - var readMoreLabel = slide.get("read-more-label")
