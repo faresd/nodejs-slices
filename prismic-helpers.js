@@ -94,7 +94,7 @@ function getPageChildren(ctx, page, pages) {
             }
         })
         var result = []
-        group.toArray().forEach(function(item) {
+        group.toArray().filter(function(item) {return !!item.getLink('link')}).forEach(function(item) {
             var label = item.getText('label');
             var link = item.getLink('link');
             var children = []
@@ -191,11 +191,13 @@ function buildChildParentDict(pages, homeId, bloghomeId) {
           items.forEach(function(item) {
             if (item) {
               var link = item.getLink('link')
-              var parentTitle = null;
-              if (link.id == bloghomeId) {
-                parentTitle = 'blog'
-              } else parentTitle = page.uid;
-              childParent[link.uid] = parentTitle
+              if (link) {
+                var parentTitle = null;
+                if (link.id == bloghomeId) {
+                  parentTitle = 'blog'
+                } else parentTitle = page.uid;
+                childParent[link.uid] = parentTitle
+              }
             }
           })
         }

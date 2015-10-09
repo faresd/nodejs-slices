@@ -5,12 +5,10 @@ var pages = require('../includes/pages');
 // -- Display all documents
 
 exports.index = prismic.route(function(req, res, ctx) {
-  ctx.api.form('everything').set("page", req.param('page') || "1").ref(ctx.ref).submit(function(err, docs) {
-    if (err) { prismic.onPrismicError(err, req, res); return; }
-    res.render('index', {
-      docs: docs
-    });
-  });
+  var homeId = ctx.api.bookmarks['home']
+  getPageById(homeId, ctx, req , res, function(doc) {
+    handelPage(doc, req, res, ctx)
+  })
 });
 
 
@@ -33,7 +31,7 @@ function socialPluginEnabled(doc) {
   return (socialEnabled == 'Enabled');
 }
 
-function getPage(uid, ctx, res, callback) {
+function getPageByUid(uid, ctx, req, res, callback) {
   ctx.api.forms('everything').ref(ctx.ref)
       .query('[[:d = at(my.page.uid,"' + uid + '")]]').submit(function(err, docs) {
         if (err) { prismic.onPrismicError(err, req, res); return; }
@@ -47,12 +45,23 @@ function getPage(uid, ctx, res, callback) {
       })
 }
 
-exports.page = prismic.route(function(req, res, ctx) {
-  var parentUid = req.params['uid']
-  var subUid = req.params['subuid']
-  //[Todo: a quick solution to handle a child page, should introduce a better dynamic way to handel multiple levels children]
-  var pageUid = subUid? subUid : parentUid
-  getPage(pageUid, ctx, res, function(doc) {
+
+function getPageById(id, ctx, req, res, callback) {
+  ctx.api.forms('everything').ref(ctx.ref)
+    .query('[[:d = at(document.id,"' + id + '")]]').submit(function(err, docs) {
+      console.log(docs, "docs")
+      if (err) { prismic.onPrismicError(err, req, res); return; }
+      if (docs.results && docs.results.length <= 0 ){
+        res.status(404)
+          .send('Not found');
+      }
+      else if (docs.results[0].id == id) {
+        callback(docs.results[0])
+      } else res.redirect(("/" + docs.results[0].uid))
+    })
+}
+
+function handelPage(doc, req, res, ctx) {
     prismic.getAllPages(ctx, function(errors, allPages) {
       if (errors[0]) { prismic.onPrismicError(errors[0], req, res); return; }
       var slices =  doc.getSliceZone("page.body").value
@@ -71,10 +80,18 @@ exports.page = prismic.route(function(req, res, ctx) {
           home: home
         })
       });
-    })
+  })
+}
+
+exports.page = prismic.route(function(req, res, ctx) {
+  var parentUid = req.params['uid']
+  var subUid = req.params['subuid']
+  //[Todo: a quick solution to handle a child page, should introduce a better dynamic way to handel multiple levels children]
+  var pageUid = subUid? subUid : parentUid
+  getPageByUid(pageUid, ctx, req, res, function(doc) {
+    handelPage(doc, req, res, ctx)
   })
 });
-
 
 // -- Preview documents from the Writing Room
 
