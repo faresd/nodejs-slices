@@ -5,35 +5,12 @@ var Prismic = require('prismic.io').Prismic,
     url = require('url'),
     querystring = require('querystring');
 
-exports.previewCookie = Prismic.previewCookie;
-
 // -- Helpers
 
 exports.getApiHome = function(accessToken, callback) {
   Prismic.Api(Configuration.apiEndpoint, callback, accessToken);
 };
 
-exports.getDocument = function(ctx, id, slug, onSuccess, onNewSlug, onNotFound) {
-  ctx.api.forms('everything').ref(ctx.ref).query('[[:d = at(document.id, "' + id + '")]]').submit(function(err, documents) {
-    var results = documents.results;
-    var doc = results && results.length ? results[0] : undefined;
-    if (err) onSuccess(err);
-    else if(doc && (!slug || doc.slug == slug)) onSuccess(null, doc)
-    else if(doc && doc.slugs.indexOf(slug) > -1 && onNewSlug) onNewSlug(doc)
-    else if(onNotFound) onNotFound()
-    else onSuccess();
-  });
-};
-
-exports.getDocuments = function(ctx, ids, callback) {
-  if(ids && ids.length) {
-    ctx.api.forms('everything').ref(ctx.ref).query('[[:d = any(document.id, [' + ids.map(function(id) { return '"' + id + '"';}).join(',') + '])]]').submit(function(err, documents) {
-      callback(err, documents.results);
-    });
-  } else {
-    callback(null, []);
-  }
-};
 
 // get next pages recursively.
 function getPages(ctx, pages, errors, page, callback) {

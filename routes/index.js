@@ -1,15 +1,27 @@
-var prismic = require('../prismic-helpers');
-var social = require('../includes/social');
-var pages = require('../includes/pages');
+var prismic1 = require('express-prismic').Prismic,
+    social = require('../includes/social'),
+    pages = require('../includes/pages');
+    prismic = require('../prismic-helpers');
+
+function handleError(err, req, res) {
+  if (err.status == 404) {
+    res.status(404).send("404 not found");
+  } else {
+    res.status(500).send("Error 500: " + err.message);
+  }
+}
 
 // -- Display all documents
 
-exports.index = prismic.route(function(req, res, ctx) {
-  var homeId = ctx.api.bookmarks['home']
-  getPageById(homeId, ctx, req , res, function(doc) {
-    handelPage(doc, req, res, ctx)
-  })
-});
+exports.index = function(req, res) {
+  var p = prismic1.withContext(req, res);
+  prismic1.withContext(req, res, function(ctx){
+    p.getBookmark('home', function (err, page) {
+      if(err) return handleError(err, req, res);
+      handelPage(page, req, res, ctx);
+    });
+  });
+};
 
 
 function toCamelcase(name) {
@@ -17,7 +29,7 @@ function toCamelcase(name) {
 };
 
 function buildMixinName(sliceType, sliceLabel) {
-  var fs = require('fs')
+  var fs = require('fs');
   var path = require('path')
   var labeledFileExists = fs.existsSync(path.resolve('views/slices/' + sliceType + '-' + sliceLabel + '.jade'))
   var mixinWithLabel = toCamelcase(sliceType + '-' + sliceLabel)
@@ -45,42 +57,22 @@ function getPageByUid(uid, ctx, req, res, callback) {
       })
 }
 
-
-function getPageById(id, ctx, req, res, callback) {
-  ctx.api.forms('everything').ref(ctx.ref)
-    .query('[[:d = at(document.id,"' + id + '")]]').submit(function(err, docs) {
-      console.log(docs, "docs")
-      if (err) { prismic.onPrismicError(err, req, res); return; }
-      if (docs.results && docs.results.length <= 0 ){
-        res.status(404)
-          .send('Not found');
-      }
-      else if (docs.results[0].id == id) {
-        callback(docs.results[0])
-      } else res.redirect(("/" + docs.results[0].uid))
-    })
-}
-
 function handelPage(doc, req, res, ctx) {
-    prismic.getAllPages(ctx, function(errors, allPages) {
-      if (errors[0]) { prismic.onPrismicError(errors[0], req, res); return; }
-      var slices =  doc.getSliceZone("page.body").value
-      prismic.home(ctx, 'home', function(home) {
-        res.render('page', {
-          doc: doc,
-          slices: slices,
-          helpers: {
-            buildMixinName:buildMixinName,
-            socialPluginEnabled:socialPluginEnabled(doc),
-            pageUrl: social.pageUrlFromRequest(req),
-            social: social,
-            pages: pages
-          },
-          allPages: allPages,
-          home: home
-        })
-      });
-  })
+    var slices =  doc.getSliceZone("page.body").value;
+    prismic.home(ctx, 'home', function(home) {
+      res.render('page', {
+        doc: doc,
+        slices: slices,
+        helpers: {
+          buildMixinName:buildMixinName,
+          socialPluginEnabled:socialPluginEnabled(doc),
+          pageUrl: social.pageUrlFromRequest(req),
+          social: social,
+          pages: pages
+        },
+        home: home
+      })
+    });
 }
 
 exports.page = prismic.route(function(req, res, ctx) {

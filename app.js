@@ -14,9 +14,17 @@ var express = require('express'),
     http = require('http'),
     path = require('path'),
     prismic = require('./prismic-helpers'),
-    social = require('./includes/social');
+    prismic1 = require('express-prismic').Prismic,
+    configuration = require('./prismic-configuration').Configuration;
+
+
+social = require('./includes/social');
 
 var app = express();
+
+// Prismic.io configuration
+
+prismic1.init(configuration);
 
 // all environments
 app.set('port', process.env.PORT || 3000);
