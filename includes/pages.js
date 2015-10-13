@@ -11,7 +11,7 @@ exports.pageLink = function(page, currentPageUrl) {
         classes.push('external')
     }
 
-    return '<a href="' + '/' +  page.url + '" class="' + classes.join(' ') + '">' + page.label + '</a>'
+    return '<a href="' + page.url + '" class="' + classes.join(' ') + '">' + page.label + '</a>'
 }
 
 exports.getHomeChildren = function(home) {

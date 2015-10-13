@@ -26,7 +26,7 @@ exports.Configuration = {
       if (doc.id == homeId) {
         return '/'
       } else {
-        return prismic.pagePath(doc.uid, parentUid)
+        return '/' + prismic.pagePath(doc.uid, parentUid)
       }
     }
     return '/documents/' + doc.id + '/' + doc.slug;
