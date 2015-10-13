@@ -15,7 +15,7 @@ exports.Configuration = {
   linkResolver: function(ctx, doc, parentUid) {
     if (doc.isBroken) return null
     var bloghomeId = ctx.api.bookmarks["bloghome"]
-    if (doc.id == bloghomeId) return '/blog';
+    if (doc.id == bloghomeId) return '#blog';
 
     if (doc.type == 'contact') {
       return '/contact';
